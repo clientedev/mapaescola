@@ -32,7 +32,7 @@ const STATIONS: Station[] = [
     lineColor: "#E20E18",
     position: [-23.5483, -46.6062],
     labelDir: "left",
-    labelOffset: [-26, 0],
+    labelOffset: [-34, -2],
   },
   {
     id: "belem",
@@ -42,7 +42,7 @@ const STATIONS: Station[] = [
     lineColor: "#E20E18",
     position: [-23.5444, -46.5947],
     labelDir: "right",
-    labelOffset: [26, 0],
+    labelOffset: [34, -2],
   },
   {
     id: "bras",
@@ -52,7 +52,7 @@ const STATIONS: Station[] = [
     lineColor: "#E20E18",
     position: [-23.5388, -46.6147],
     labelDir: "top",
-    labelOffset: [0, -26],
+    labelOffset: [0, -32],
   },
   {
     id: "mooca-cptm",
@@ -62,7 +62,7 @@ const STATIONS: Station[] = [
     lineColor: "#00A99D",
     position: [-23.5673, -46.5949],
     labelDir: "right",
-    labelOffset: [26, 0],
+    labelOffset: [34, 2],
   },
   {
     id: "ipiranga",
@@ -72,7 +72,7 @@ const STATIONS: Station[] = [
     lineColor: "#00A99D",
     position: [-23.5957, -46.5979],
     labelDir: "bottom",
-    labelOffset: [0, 26],
+    labelOffset: [0, 32],
   },
 ];
 

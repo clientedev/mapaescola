@@ -141,12 +141,28 @@
   border: none;
 }
 
+/* Tint the dark CartoDB tiles toward a deep navy blue */
+.leaflet-container {
+  background: #050d24;
+}
+.leaflet-tile-pane .leaflet-tile {
+  filter: sepia(1) hue-rotate(190deg) saturate(5) brightness(0.9) contrast(1.05);
+}
+
+/* Make sure permanent labels and station markers stay above the school photo */
+.leaflet-tooltip-pane {
+  z-index: 700;
+}
+.station-marker-wrap {
+  z-index: 690 !important;
+}
+
 /* Permanent station labels on the map */
 .leaflet-tooltip.station-label {
-  background: rgba(15, 23, 42, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(10, 18, 42, 0.94);
+  border: 1px solid rgba(125, 170, 255, 0.32);
   border-radius: 999px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
   padding: 0;
   font-family: 'Inter', system-ui, sans-serif;
   white-space: nowrap;
