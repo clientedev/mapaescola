@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Mapa de Localização da Escola"
+version = "1.0.0"
+id = "artifacts/mapa-escola"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23935
+
+[services.development]
+run = "pnpm --filter @workspace/mapa-escola run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/mapa-escola", "run", "build" ]
+publicDir = "artifacts/mapa-escola/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23935"
+BASE_PATH = "/"
