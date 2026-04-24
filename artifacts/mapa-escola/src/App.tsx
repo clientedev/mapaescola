@@ -101,9 +101,9 @@ function formatWalkTime(m: number): string {
 
 const schoolIcon = L.divIcon({
   className: "school-marker",
-  iconSize: [44, 56],
-  iconAnchor: [22, 54],
-  popupAnchor: [0, -60],
+  iconSize: [64, 80],
+  iconAnchor: [32, 77],
+  popupAnchor: [0, -86],
   html: `
     <div class="school-marker-inner-photo">
       <div class="school-photo-wrap">
@@ -191,6 +191,9 @@ function StationCard({
 export default function App() {
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [downloading, setDownloading] = useState(false);
+  const [schoolPhotoPos, setSchoolPhotoPos] = useState<[number, number]>(
+    SCHOOL.position
+  );
   const printRef = useRef<HTMLDivElement>(null);
 
   const stationsWithDistance = useMemo<StationWithDistance[]>(
@@ -206,6 +209,12 @@ export default function App() {
     () => [SCHOOL.position, ...STATIONS.map((s) => s.position)],
     []
   );
+
+  const photoMoved =
+    schoolPhotoPos[0] !== SCHOOL.position[0] ||
+    schoolPhotoPos[1] !== SCHOOL.position[1];
+
+  const resetSchoolPhoto = () => setSchoolPhotoPos(SCHOOL.position);
 
   const handleDownload = async () => {
     if (!printRef.current) return;
@@ -280,6 +289,23 @@ export default function App() {
 
           <div className="grid lg:grid-cols-[1fr_360px] gap-0">
             <div className="relative h-[420px] sm:h-[520px] lg:h-[620px] bg-muted">
+              <div
+                className="map-overlay no-print"
+                style={{ top: 12, right: 12 }}
+              >
+                <span className="map-hint">
+                  Arraste a foto da escola para reposicionar
+                </span>
+                {photoMoved && (
+                  <button
+                    type="button"
+                    onClick={resetSchoolPhoto}
+                    className="map-reset-btn"
+                  >
+                    Restaurar posição
+                  </button>
+                )}
+              </div>
               <MapContainer
                 center={SCHOOL.position}
                 zoom={15}
@@ -337,7 +363,42 @@ export default function App() {
                   />
                 ))}
 
-                <Marker position={SCHOOL.position} icon={schoolIcon} zIndexOffset={1000}>
+                {photoMoved && (
+                  <>
+                    <Polyline
+                      positions={[SCHOOL.position, schoolPhotoPos]}
+                      pathOptions={{
+                        color: "#ffffff",
+                        weight: 2,
+                        opacity: 0.9,
+                        dashArray: "4 5",
+                      }}
+                    />
+                    <Circle
+                      center={SCHOOL.position}
+                      radius={18}
+                      pathOptions={{
+                        color: "#ffffff",
+                        weight: 2,
+                        fillColor: "#DC2626",
+                        fillOpacity: 1,
+                      }}
+                    />
+                  </>
+                )}
+
+                <Marker
+                  position={schoolPhotoPos}
+                  icon={schoolIcon}
+                  zIndexOffset={1000}
+                  draggable={true}
+                  eventHandlers={{
+                    dragend: (e) => {
+                      const ll = e.target.getLatLng();
+                      setSchoolPhotoPos([ll.lat, ll.lng]);
+                    },
+                  }}
+                >
                   <Popup>
                     <div className="font-sans" style={{ minWidth: 200 }}>
                       <img

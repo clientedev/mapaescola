@@ -84,21 +84,28 @@
   background: transparent;
   border: none;
 }
+.school-marker {
+  cursor: grab;
+}
+.school-marker:active,
+.leaflet-marker-draggable.leaflet-drag-target .school-marker {
+  cursor: grabbing;
+}
 .school-marker-inner-photo {
   position: relative;
-  width: 44px;
-  height: 56px;
+  width: 64px;
+  height: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 .school-photo-wrap {
-  width: 44px;
-  height: 44px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  border: 2.5px solid #DC2626;
+  border: 3px solid #DC2626;
   background: white;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -114,10 +121,52 @@
   width: 0;
   height: 0;
   margin-top: -1px;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 9px solid #DC2626;
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 13px solid #DC2626;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.35));
+}
+
+/* Floating help/reset chips on map */
+.map-overlay {
+  position: absolute;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+.map-overlay > * {
+  pointer-events: auto;
+}
+.map-hint {
+  background: rgba(10, 18, 42, 0.85);
+  border: 1px solid rgba(125, 170, 255, 0.32);
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 11px;
+  border-radius: 999px;
+  font-family: 'Inter', system-ui, sans-serif;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  white-space: nowrap;
+}
+.map-reset-btn {
+  background: rgba(255, 255, 255, 0.96);
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 11px;
+  border-radius: 999px;
+  font-family: 'Inter', system-ui, sans-serif;
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.map-reset-btn:hover {
+  background: #ffffff;
 }
 
 .station-marker {
