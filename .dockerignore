@@ -1,0 +1,16 @@
+node_modules
+**/node_modules
+**/dist
+**/.next
+.git
+.cache
+.local
+.agents
+.pnpm-store
+attached_assets
+artifacts
+lib
+scripts
+*.log
+.env
+.env.*
