@@ -79,31 +79,61 @@
   }
 }
 
-/* Custom marker pulse */
+/* School photo marker */
 .school-marker {
   background: transparent;
   border: none;
 }
-.school-marker-inner {
+.school-marker-inner-photo {
   position: relative;
-  width: 44px;
-  height: 44px;
+  width: 72px;
+  height: 88px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.school-photo-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 4px solid #DC2626;
+  background: white;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.school-marker-inner::after {
+.school-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.school-photo-pin {
+  width: 0;
+  height: 0;
+  margin-top: -2px;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 14px solid #DC2626;
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+}
+.school-marker-inner-photo::after {
   content: '';
   position: absolute;
-  inset: -8px;
+  top: 8px;
+  left: 8px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  background: rgba(220, 38, 38, 0.25);
-  animation: schoolPulse 2s ease-out infinite;
+  background: rgba(220, 38, 38, 0.28);
+  animation: schoolPulse 2.2s ease-out infinite;
   z-index: -1;
 }
 @keyframes schoolPulse {
-  0% { transform: scale(0.6); opacity: 0.8; }
-  100% { transform: scale(1.6); opacity: 0; }
+  0% { transform: scale(0.85); opacity: 0.85; }
+  100% { transform: scale(2.0); opacity: 0; }
 }
 
 .station-marker {

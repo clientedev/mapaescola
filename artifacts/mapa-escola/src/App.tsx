@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle, useMap } from "react-leaflet";
 import L, { LatLngExpression } from "leaflet";
 import { toPng } from "html-to-image";
+import schoolPhoto from "@assets/image_1777055309803.png";
 
 type Station = {
   id: string;
@@ -13,7 +14,7 @@ type Station = {
 };
 
 const SCHOOL: { name: string; address: string; position: [number, number] } = {
-  name: "Escola",
+  name: 'Escola SENAI "Morvan Figueiredo"',
   address: "Rua do Oratório, 215 — Mooca, São Paulo",
   position: [-23.5535, -46.6045],
 };
@@ -86,19 +87,15 @@ function formatWalkTime(m: number): string {
 
 const schoolIcon = L.divIcon({
   className: "school-marker",
-  iconSize: [44, 44],
-  iconAnchor: [22, 22],
+  iconSize: [72, 88],
+  iconAnchor: [36, 84],
+  popupAnchor: [0, -78],
   html: `
-    <div class="school-marker-inner">
-      <div style="
-        width: 44px; height: 44px;
-        background: #DC2626; color: white;
-        border-radius: 50%;
-        border: 4px solid white;
-        box-shadow: 0 6px 18px rgba(220,38,38,0.45);
-        display:flex; align-items:center; justify-content:center;
-        font-weight: 800; font-size: 18px; font-family: Inter, sans-serif;
-      ">E</div>
+    <div class="school-marker-inner-photo">
+      <div class="school-photo-wrap">
+        <img src="${schoolPhoto}" alt="Escola SENAI Morvan Figueiredo" />
+      </div>
+      <div class="school-photo-pin"></div>
     </div>
   `,
 });
@@ -219,15 +216,17 @@ export default function App() {
     <div className="min-h-screen bg-background">
       <header className="no-print border-b border-border bg-card/70 backdrop-blur sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold">
-              M
-            </div>
-            <div>
-              <h1 className="text-base sm:text-lg font-bold leading-tight">
-                Mapa de Localização da Escola
+          <div className="flex items-center gap-3 min-w-0">
+            <img
+              src={schoolPhoto}
+              alt="Escola SENAI"
+              className="w-10 h-10 rounded-lg object-cover border border-border shrink-0"
+            />
+            <div className="min-w-0">
+              <h1 className="text-base sm:text-lg font-bold leading-tight truncate">
+                Escola SENAI "Morvan Figueiredo"
               </h1>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground truncate">
                 Estações de metrô e trem mais próximas
               </p>
             </div>
@@ -274,8 +273,10 @@ export default function App() {
                 attributionControl={true}
               >
                 <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                  url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                  subdomains={["a", "b", "c", "d"]}
+                  maxZoom={20}
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
                 />
                 <FitToMarkers points={allPoints} />
 
@@ -307,9 +308,20 @@ export default function App() {
                   />
                 ))}
 
-                <Marker position={SCHOOL.position} icon={schoolIcon}>
+                <Marker position={SCHOOL.position} icon={schoolIcon} zIndexOffset={1000}>
                   <Popup>
-                    <div className="font-sans">
+                    <div className="font-sans" style={{ minWidth: 200 }}>
+                      <img
+                        src={schoolPhoto}
+                        alt="Escola SENAI"
+                        style={{
+                          width: "100%",
+                          height: 110,
+                          objectFit: "cover",
+                          borderRadius: 8,
+                          marginBottom: 8,
+                        }}
+                      />
                       <div className="font-bold text-base">{SCHOOL.name}</div>
                       <div className="text-xs text-gray-600 mt-1">
                         {SCHOOL.address}
@@ -355,14 +367,23 @@ export default function App() {
 
             <aside className="border-t lg:border-t-0 lg:border-l border-border p-5 bg-card">
               <div className="mb-4">
+                <div className="rounded-xl overflow-hidden border border-border shadow-sm mb-3">
+                  <img
+                    src={schoolPhoto}
+                    alt={SCHOOL.name}
+                    className="w-full h-32 object-cover"
+                  />
+                </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-destructive" />
                   <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Escola
                   </span>
                 </div>
-                <h3 className="mt-1 font-bold text-foreground">{SCHOOL.name}</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="mt-1 font-bold text-foreground leading-tight">
+                  {SCHOOL.name}
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">
                   {SCHOOL.address}
                 </p>
               </div>
