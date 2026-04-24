@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle, Tooltip, useMap } from "react-leaflet";
 import L, { LatLngExpression } from "leaflet";
 import { toPng } from "html-to-image";
@@ -194,6 +194,14 @@ export default function App() {
   const [schoolPhotoPos, setSchoolPhotoPos] = useState<[number, number]>(
     SCHOOL.position
   );
+  const [stationPositions, setStationPositions] = useState<
+    Record<string, [number, number]>
+  >(() =>
+    STATIONS.reduce<Record<string, [number, number]>>((acc, s) => {
+      acc[s.id] = s.position;
+      return acc;
+    }, {})
+  );
   const printRef = useRef<HTMLDivElement>(null);
 
   const stationsWithDistance = useMemo<StationWithDistance[]>(
@@ -214,7 +222,22 @@ export default function App() {
     schoolPhotoPos[0] !== SCHOOL.position[0] ||
     schoolPhotoPos[1] !== SCHOOL.position[1];
 
-  const resetSchoolPhoto = () => setSchoolPhotoPos(SCHOOL.position);
+  const anyStationMoved = STATIONS.some((s) => {
+    const p = stationPositions[s.id];
+    return p[0] !== s.position[0] || p[1] !== s.position[1];
+  });
+
+  const anyMoved = photoMoved || anyStationMoved;
+
+  const resetAllPositions = () => {
+    setSchoolPhotoPos(SCHOOL.position);
+    setStationPositions(
+      STATIONS.reduce<Record<string, [number, number]>>((acc, s) => {
+        acc[s.id] = s.position;
+        return acc;
+      }, {})
+    );
+  };
 
   const handleDownload = async () => {
     if (!printRef.current) return;
@@ -294,15 +317,15 @@ export default function App() {
                 style={{ top: 12, right: 12 }}
               >
                 <span className="map-hint">
-                  Arraste a foto da escola para reposicionar
+                  Arraste qualquer ícone para reposicionar
                 </span>
-                {photoMoved && (
+                {anyMoved && (
                   <button
                     type="button"
-                    onClick={resetSchoolPhoto}
+                    onClick={resetAllPositions}
                     className="map-reset-btn"
                   >
-                    Restaurar posição
+                    Restaurar posições
                   </button>
                 )}
               </div>
@@ -342,7 +365,7 @@ export default function App() {
                 {stationsWithDistance.map((station) => (
                   <Polyline
                     key={`line-${station.id}`}
-                    positions={[SCHOOL.position, station.position]}
+                    positions={[schoolPhotoPos, stationPositions[station.id]]}
                     pathOptions={{
                       color: "#ffffff",
                       weight: highlightedId === station.id ? 9 : 7,
@@ -353,7 +376,7 @@ export default function App() {
                 {stationsWithDistance.map((station) => (
                   <Polyline
                     key={`line-fg-${station.id}`}
-                    positions={[SCHOOL.position, station.position]}
+                    positions={[schoolPhotoPos, stationPositions[station.id]]}
                     pathOptions={{
                       color: station.lineColor,
                       weight: highlightedId === station.id ? 5 : 4,
@@ -420,13 +443,49 @@ export default function App() {
                   </Popup>
                 </Marker>
 
-                {stationsWithDistance.map((station) => (
+                {stationsWithDistance.map((station) => {
+                  const pos = stationPositions[station.id];
+                  const moved =
+                    pos[0] !== station.position[0] ||
+                    pos[1] !== station.position[1];
+                  return (
+                  <Fragment key={station.id}>
+                    {moved && (
+                      <>
+                        <Polyline
+                          positions={[station.position, pos]}
+                          pathOptions={{
+                            color: "#ffffff",
+                            weight: 1.5,
+                            opacity: 0.8,
+                            dashArray: "3 4",
+                          }}
+                        />
+                        <Circle
+                          center={station.position}
+                          radius={14}
+                          pathOptions={{
+                            color: "#ffffff",
+                            weight: 2,
+                            fillColor: station.lineColor,
+                            fillOpacity: 1,
+                          }}
+                        />
+                      </>
+                    )}
                   <Marker
-                    key={station.id}
-                    position={station.position}
+                    position={pos}
                     icon={makeStationIcon(station)}
+                    draggable={true}
                     eventHandlers={{
                       click: () => setHighlightedId(station.id),
+                      dragend: (e) => {
+                        const ll = e.target.getLatLng();
+                        setStationPositions((prev) => ({
+                          ...prev,
+                          [station.id]: [ll.lat, ll.lng],
+                        }));
+                      },
                     }}
                   >
                     <Tooltip
@@ -470,7 +529,9 @@ export default function App() {
                       </div>
                     </Popup>
                   </Marker>
-                ))}
+                  </Fragment>
+                  );
+                })}
               </MapContainer>
             </div>
 
