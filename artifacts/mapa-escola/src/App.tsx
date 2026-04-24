@@ -101,9 +101,9 @@ function formatWalkTime(m: number): string {
 
 const schoolIcon = L.divIcon({
   className: "school-marker",
-  iconSize: [72, 88],
-  iconAnchor: [36, 84],
-  popupAnchor: [0, -78],
+  iconSize: [44, 56],
+  iconAnchor: [22, 54],
+  popupAnchor: [0, -60],
   html: `
     <div class="school-marker-inner-photo">
       <div class="school-photo-wrap">
@@ -143,7 +143,7 @@ function FitToMarkers({ points }: { points: LatLngExpression[] }) {
   useEffect(() => {
     if (!points.length) return;
     const bounds = L.latLngBounds(points);
-    map.fitBounds(bounds, { padding: [60, 60] });
+    map.fitBounds(bounds, { padding: [50, 50] });
   }, [map, points]);
   return null;
 }
