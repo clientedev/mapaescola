@@ -141,6 +141,46 @@
   border: none;
 }
 
+/* Permanent station labels on the map */
+.leaflet-tooltip.station-label {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  padding: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  white-space: nowrap;
+  color: inherit;
+}
+.leaflet-tooltip.station-label::before {
+  border-top-color: white;
+}
+.station-label-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+}
+.station-label-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.station-label-name {
+  font-weight: 700;
+  font-size: 12px;
+  color: #0f172a;
+}
+.station-label-distance {
+  font-weight: 600;
+  font-size: 11px;
+  color: #64748b;
+  padding-left: 6px;
+  margin-left: 2px;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+
 @media print {
   .no-print { display: none !important; }
   .print-area { box-shadow: none !important; }

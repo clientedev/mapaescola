@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle, Tooltip, useMap } from "react-leaflet";
 import L, { LatLngExpression } from "leaflet";
 import { toPng } from "html-to-image";
 import schoolPhoto from "@assets/image_1777055309803.png";
@@ -104,17 +104,18 @@ function makeStationIcon(station: Station): L.DivIcon {
   const label = station.type === "metro" ? "M" : "T";
   return L.divIcon({
     className: "station-marker",
-    iconSize: [36, 36],
-    iconAnchor: [18, 18],
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
+    popupAnchor: [0, -22],
     html: `
       <div style="
-        width: 36px; height: 36px;
+        width: 44px; height: 44px;
         background: ${station.lineColor}; color: white;
-        border-radius: 8px;
-        border: 3px solid white;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        border-radius: 10px;
+        border: 4px solid white;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.35);
         display:flex; align-items:center; justify-content:center;
-        font-weight: 800; font-size: 16px; font-family: Inter, sans-serif;
+        font-weight: 900; font-size: 20px; font-family: Inter, sans-serif;
         transform: rotate(45deg);
       ">
         <span style="transform: rotate(-45deg); display:inline-block;">${label}</span>
@@ -273,10 +274,17 @@ export default function App() {
                 attributionControl={true}
               >
                 <TileLayer
-                  url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                  url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png"
                   subdomains={["a", "b", "c", "d"]}
                   maxZoom={20}
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                />
+                <TileLayer
+                  url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png"
+                  subdomains={["a", "b", "c", "d"]}
+                  maxZoom={20}
+                  zIndex={650}
+                  attribution=""
                 />
                 <FitToMarkers points={allPoints} />
 
@@ -296,14 +304,21 @@ export default function App() {
                     key={`line-${station.id}`}
                     positions={[SCHOOL.position, station.position]}
                     pathOptions={{
-                      color:
-                        highlightedId === station.id
-                          ? station.lineColor
-                          : station.lineColor,
-                      weight: highlightedId === station.id ? 5 : 2.5,
-                      opacity: highlightedId === station.id ? 0.95 : 0.55,
-                      dashArray:
-                        highlightedId === station.id ? undefined : "8 6",
+                      color: "#ffffff",
+                      weight: highlightedId === station.id ? 9 : 7,
+                      opacity: 0.95,
+                    }}
+                  />
+                ))}
+                {stationsWithDistance.map((station) => (
+                  <Polyline
+                    key={`line-fg-${station.id}`}
+                    positions={[SCHOOL.position, station.position]}
+                    pathOptions={{
+                      color: station.lineColor,
+                      weight: highlightedId === station.id ? 5 : 4,
+                      opacity: highlightedId === station.id ? 1 : 0.85,
+                      dashArray: highlightedId === station.id ? undefined : "10 6",
                     }}
                   />
                 ))}
@@ -339,6 +354,25 @@ export default function App() {
                       click: () => setHighlightedId(station.id),
                     }}
                   >
+                    <Tooltip
+                      permanent
+                      direction="top"
+                      offset={[0, -22]}
+                      className="station-label"
+                    >
+                      <div className="station-label-inner">
+                        <span
+                          className="station-label-dot"
+                          style={{ background: station.lineColor }}
+                        />
+                        <span className="station-label-name">
+                          {station.name}
+                        </span>
+                        <span className="station-label-distance">
+                          {formatDistance(station.distance)}
+                        </span>
+                      </div>
+                    </Tooltip>
                     <Popup>
                       <div className="font-sans">
                         <div className="font-bold text-base">
