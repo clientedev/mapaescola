@@ -143,42 +143,46 @@
 
 /* Permanent station labels on the map */
 .leaflet-tooltip.station-label {
-  background: white;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
   padding: 0;
   font-family: 'Inter', system-ui, sans-serif;
   white-space: nowrap;
-  color: inherit;
+  color: white;
+  backdrop-filter: blur(6px);
 }
+/* hide default tooltip arrows; pill shape looks cleaner without them */
 .leaflet-tooltip.station-label::before {
-  border-top-color: white;
+  display: none;
 }
 .station-label-inner {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 10px;
+  padding: 5px 11px;
 }
 .station-label-dot {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   display: inline-block;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.18);
 }
 .station-label-name {
   font-weight: 700;
   font-size: 12px;
-  color: #0f172a;
+  color: #ffffff;
+  letter-spacing: 0.01em;
 }
 .station-label-distance {
   font-weight: 600;
   font-size: 11px;
-  color: #64748b;
-  padding-left: 6px;
+  color: #cbd5e1;
+  padding-left: 7px;
   margin-left: 2px;
-  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 @media print {

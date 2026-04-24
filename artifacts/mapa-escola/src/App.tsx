@@ -4,6 +4,8 @@ import L, { LatLngExpression } from "leaflet";
 import { toPng } from "html-to-image";
 import schoolPhoto from "@assets/image_1777055309803.png";
 
+type LabelDir = "top" | "bottom" | "left" | "right";
+
 type Station = {
   id: string;
   name: string;
@@ -11,6 +13,8 @@ type Station = {
   line: string;
   lineColor: string;
   position: [number, number];
+  labelDir: LabelDir;
+  labelOffset: [number, number];
 };
 
 const SCHOOL: { name: string; address: string; position: [number, number] } = {
@@ -27,6 +31,8 @@ const STATIONS: Station[] = [
     line: "Linha 3 — Vermelha",
     lineColor: "#E20E18",
     position: [-23.5483, -46.6062],
+    labelDir: "left",
+    labelOffset: [-26, 0],
   },
   {
     id: "belem",
@@ -35,6 +41,8 @@ const STATIONS: Station[] = [
     line: "Linha 3 — Vermelha",
     lineColor: "#E20E18",
     position: [-23.5444, -46.5947],
+    labelDir: "right",
+    labelOffset: [26, 0],
   },
   {
     id: "bras",
@@ -43,6 +51,8 @@ const STATIONS: Station[] = [
     line: "Linha 3 — Vermelha / CPTM",
     lineColor: "#E20E18",
     position: [-23.5388, -46.6147],
+    labelDir: "top",
+    labelOffset: [0, -26],
   },
   {
     id: "mooca-cptm",
@@ -51,6 +61,8 @@ const STATIONS: Station[] = [
     line: "Linha 10 — Turquesa",
     lineColor: "#00A99D",
     position: [-23.5673, -46.5949],
+    labelDir: "right",
+    labelOffset: [26, 0],
   },
   {
     id: "ipiranga",
@@ -59,6 +71,8 @@ const STATIONS: Station[] = [
     line: "Linha 10 — Turquesa",
     lineColor: "#00A99D",
     position: [-23.5957, -46.5979],
+    labelDir: "bottom",
+    labelOffset: [0, 26],
   },
 ];
 
@@ -274,13 +288,13 @@ export default function App() {
                 attributionControl={true}
               >
                 <TileLayer
-                  url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png"
+                  url="https://{s}.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}{r}.png"
                   subdomains={["a", "b", "c", "d"]}
                   maxZoom={20}
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
                 />
                 <TileLayer
-                  url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png"
+                  url="https://{s}.basemaps.cartocdn.com/rastertiles/dark_only_labels/{z}/{x}/{y}{r}.png"
                   subdomains={["a", "b", "c", "d"]}
                   maxZoom={20}
                   zIndex={650}
@@ -356,8 +370,8 @@ export default function App() {
                   >
                     <Tooltip
                       permanent
-                      direction="top"
-                      offset={[0, -22]}
+                      direction={station.labelDir}
+                      offset={station.labelOffset}
                       className="station-label"
                     >
                       <div className="station-label-inner">
